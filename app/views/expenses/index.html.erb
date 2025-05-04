@@ -1,0 +1,36 @@
+<h1>Всі витрати</h1>
+<%= link_to "Нова витрата", new_expense_path, class: "btn btn-success mb-3" %>
+
+<% if flash[:notice] %>
+  <div class="alert alert-success"><%= flash[:notice] %></div>
+<% end %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Сума</th>
+      <th>Опис</th>
+      <th>Дата</th>
+      <th>Категорії</th>
+      <th>Методи оплати</th>
+      <th>Дії</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @expenses.each do |expense| %>
+      <tr>
+        <td><%= expense.amount %></td>
+        <td><%= expense.description %></td>
+        <td><%= l(expense.date, format: :short) %></td>
+        <td><%= expense.categories.map(&:name).join(', ') %></td>
+        <td><%= expense.payment_methods.map(&:name).join(', ') %></td>
+        <td>
+          <%= link_to "Показати", expense_path(expense), class: "btn btn-sm btn-info" %>
+          <%= link_to "Редагувати", edit_expense_path(expense), class: "btn btn-sm btn-warning" %>
+          <%= link_to "Видалити", expense_path(expense), method: :delete, data: { confirm: "Точно видалити?" }, class: "btn btn-sm btn-danger"%>
+
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,9 +1,38 @@
-<h1>Всі витрати</h1>
-<%= link_to "Нова витрата", new_expense_path, class: "btn btn-success mb-3" %>
+<h1>Список витрат</h1>
 
-<% if flash[:notice] %>
-  <div class="alert alert-success"><%= flash[:notice] %></div>
+<%= link_to 'Нова витрата', new_expense_path, class: "btn btn-success mb-3" %>
+
+<%= form_with url: expenses_path, method: :get, local: true, class: "row g-3 mb-4" do |form| %>
+  <div class="col-md-1">
+    <%= form.label :from, "Від дати" %>
+    <%= form.date_field :from, class: "form-control", value: params[:from] %>
+  </div>
+  <div class="col-md-1">
+    <%= form.label :to, "До дати" %>
+    <%= form.date_field :to, class: "form-control", value: params[:to] %>
+  </div>
+  <div class="col-md-1">
+    <%= form.label :category_id, "Категорія" %>
+    <%= form.select :category_id, options_from_collection_for_select(@categories, :id, :name, params[:category_id]), include_blank: "Всі", class: "form-select" %>
+  </div>
+  <div class="col-md-1">
+    <%= form.label :payment_method_id, "Метод оплати" %>
+    <%= form.select :payment_method_id, options_from_collection_for_select(@payment_methods, :id, :name, params[:payment_method_id]), include_blank: "Всі", class: "form-select" %>
+  </div>
+  <div class="col-md-1">
+    <%= form.label :min_amount, "Мін. сума" %>
+    <%= form.number_field :min_amount, class: "form-control", value: params[:min_amount] %>
+  </div>
+  <div class="col-md-1">
+    <%= form.label :max_amount, "Макс. сума" %>
+    <%= form.number_field :max_amount, class: "form-control", value: params[:max_amount] %>
+  </div>
+  <div class="col-3">
+    <%= form.submit "Фільтрувати", class: "btn btn-primary" %>
+    <%= link_to "Очистити", expenses_path, class: "btn btn-secondary ms-2" %>
+  </div>
 <% end %>
+
 
 <table class="table table-striped">
   <thead>
@@ -12,7 +41,7 @@
       <th>Опис</th>
       <th>Дата</th>
       <th>Категорії</th>
-      <th>Методи оплати</th>
+      <th>Способи оплати</th>
       <th>Дії</th>
     </tr>
   </thead>
@@ -21,16 +50,23 @@
       <tr>
         <td><%= expense.amount %></td>
         <td><%= expense.description %></td>
-        <td><%= l(expense.date, format: :short) %></td>
-        <td><%= expense.categories.map(&:name).join(', ') %></td>
-        <td><%= expense.payment_methods.map(&:name).join(', ') %></td>
+        <td><%= expense.date.strftime("%d.%m.%Y %H:%M") %></td>
+        <td><%= expense.categories.map(&:name).join(", ") %></td>
+        <td><%= expense.payment_methods.map(&:name).join(", ") %></td>
         <td>
-          <%= link_to "Показати", expense_path(expense), class: "btn btn-sm btn-info" %>
-          <%= link_to "Редагувати", edit_expense_path(expense), class: "btn btn-sm btn-warning" %>
-          <%= link_to "Видалити", expense_path(expense), method: :delete, data: { confirm: "Точно видалити?" }, class: "btn btn-sm btn-danger"%>
-
+          <%= link_to 'Переглянути', expense, class: "btn btn-sm btn-info" %>
+          <%= link_to 'Редагувати', edit_expense_path(expense), class: "btn btn-sm btn-warning" %>
+          <%= link_to 'Видалити', expense, method: :delete, data: { confirm: 'Ви впевнені?' }, class: "btn btn-sm btn-danger" %>
         </td>
       </tr>
     <% end %>
+
+    <div class="alert alert-info mt-3">
+      <p><strong>Загальна сума:</strong> <%= number_to_currency(@total_amount, unit: "₴") %></p>
+      <p><strong>Середня сума:</strong> <%= number_to_currency(@average_amount, unit: "₴") %></p>
+      <p><strong>Максимальна витрата:</strong> <%= number_to_currency(@max_expense, unit: "₴") %></p>
+      <p><strong>Мінімальна витрата:</strong> <%= number_to_currency(@min_expense, unit: "₴") %></p>
+    </div>
+
   </tbody>
 </table>

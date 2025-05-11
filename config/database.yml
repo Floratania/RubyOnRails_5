@@ -61,7 +61,7 @@ test:
   <<: *default
   database: expense_manager_test
   username: postgres
-  password: <%= ENV["EXPENSE_MANAGER_DATABASE_PASSWORD"] %>
+  password: 1111
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -88,7 +88,7 @@ production:
     <<: *default
     database: expense_manager_production
     username: postgres
-    password: <%= ENV["EXPENSE_MANAGER_DATABASE_PASSWORD"] %>
+    password: 1111
   cache:
     <<: *primary_production
     database: expense_manager_production_cache

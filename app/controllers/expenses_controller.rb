@@ -2,8 +2,8 @@ class ExpensesController < ApplicationController
   before_action :set_expense, only: %i[show edit update destroy]
 
   def index
-    @categories = Category.all
-    @payment_methods = PaymentMethod.all
+    @categories =  Category.joins(:expenses).distinct
+    @payment_methods = PaymentMethod.joins(:expenses).distinct
     
     
     @expenses = Expense.includes(:categories, :payment_methods).order(date: :desc)

@@ -1,8 +1,19 @@
-<%= form_with(model: payment_method, local: true) do |form| %>
+<%= form_with model: @payment_method, local: true do |form| %>
+  <% if @payment_method.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% @payment_method.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div class="mb-3">
-    <%= form.label :name, class: 'form-label' %>
-    <%= form.text_field :name, class: 'form-control' %>
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" %>
   </div>
 
-  <%= form.submit class: 'btn btn-primary' %>
+
+  <%= form.submit "Зберегти", class: "btn btn-primary" %>
 <% end %>
